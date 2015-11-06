@@ -1,4 +1,5 @@
 library(choroplethr)
+library(ggplot2)
 
 Election2015<-read.csv('./Election2015.csv')
 Election2015$value<-Election2015$Bevin/Election2015$Total
@@ -21,3 +22,4 @@ county_choropleth(Medicaid, state_zoom = 'kentucky',title='Per Capita Medicaid E
 Model<-data.frame(Election2015$County,Election2015$value,Medicaid$value)
 colnames(Model)<-c('County','BevinPercent','MedicaidExpansion')
 lm(Model$BevinPercent~Model$MedicaidExpansion)
+qplot(Model$BevinPercent,Model$MedicaidExpansion)
