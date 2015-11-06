@@ -1,0 +1,25 @@
+{
+    "contents" : "",
+    "created" : 1446787812154.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "7E75B5E4",
+    "lastKnownWriteTime" : 7011605692497750387,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "3r2izscgyq",
+        "caption" : "Lost2015Counties",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=Lost2015Counties&cache_key=3r2izscgyq",
+        "displayedObservations" : "23",
+        "environment" : "",
+        "object" : "Lost2015Counties",
+        "totalObservations" : "23",
+        "variables" : "2"
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}
