@@ -38,7 +38,7 @@ FayetteCoVotes<-as.numeric(kytotalvotes[34,][-1])
 FayetteCoProportion<-FayetteCoMargin*FayetteCoPercent
 FayetteCoFrame<-data.frame(Year[1:length(Year)-1],FayetteCoPercent,FayetteCoMargin,FayetteCoVotes,FayetteCoProportion)
 
-#County Lists
+#Counties where Dems got more than 50% of the vote by year
 Counties2015<-sapply(which(kydempercent$PercentDem2015>0.5),function(i){
   return<-as.character(kydempercent$County[i])
 })
@@ -72,6 +72,8 @@ Counties1979<-sapply(which(kydempercent$PercentDem1979>0.5),function(i){
 Counties1975<-sapply(which(kydempercent$PercentDem1975>0.5),function(i){
   return<-as.character(kydempercent$County[i])
 })
+
+#Which Counties voted Democrat in what years
 AllDemCounties<-data.frame(unique(c(Counties2011,Counties2007,Counties2003,Counties1999,Counties1995,Counties1991,Counties1987,Counties1983,Counties1979,Counties1975)))
 colnames(AllDemCounties)<-'County'
 AllDemCounties$ky2011<-sapply(AllDemCounties$County,function(i){
@@ -104,7 +106,8 @@ AllDemCounties$ky1979<-sapply(AllDemCounties$County,function(i){
 AllDemCounties$ky1975<-sapply(AllDemCounties$County,function(i){
   return<-i %in% Counties1975
 })
-
+ 
+# Which counties voted Democrat in every election going back to 1975
 AlwaysDemCounties<-vector(length=0)
 for(i in 1:length(AllDemCounties$County)){
   if(!(FALSE %in% AllDemCounties[-1][i,])){
@@ -121,3 +124,56 @@ Lost2015Counties$value<-as.numeric(Lost2015Counties$value)
 colnames(Lost2015Counties)<-c('County','value','region')
 
 county_choropleth(Lost2015Counties,state_zoom='kentucky')
+
+# Re-Do that experiment with Counties that Voted Dem every time, or only once for Republican.
+AlmostAlwaysDemCounties<-vector(length=0)
+for(i in 1:length(AllDemCounties$County)){
+  if(sum(AllDemCounties[-1][i,]==FALSE)<=1){
+    AlmostAlwaysDemCounties<-c(AlmostAlwaysDemCounties,as.character(AllDemCounties$County[i]))
+  }
+}
+LostAlmost2015Counties<-data.frame(AlmostAlwaysDemCounties,AlmostAlwaysDemCounties %in% Counties2015)
+LostAlmost2015Counties$region<-sapply(LostAlmost2015Counties$AlmostAlwaysDemCounties,function(i){
+  return<-as.numeric(KYFIPS$FIP[which(KYFIPS$County==as.character(i))])
+})
+colnames(LostAlmost2015Counties)<-c('region','value')
+LostAlmost2015Counties$value<-as.numeric(LostAlmost2015Counties$value)
+colnames(LostAlmost2015Counties)<-c('County','value','region')
+
+county_choropleth(LostAlmost2015Counties,state_zoom='kentucky')
+
+
+# Now, lets redo the 2015 Election using different theories
+Redo2015Election<-data.frame(kyelections$County,kyelections$TotalVotes2015,kyelections$PercentDem2015)
+colnames(Redo2015Election)<-c('County','TotalVotes','ActualPercentDem')
+
+#Strategy One: Consolidate the base of counties that have ALWAYS voted Democrat.
+MedianMarginAlways<-data.frame(AlwaysDemCounties)
+MedianMarginAlways$medianDemPercent<-sapply(MedianMarginAlways$AlwaysDemCounties,function(i){
+  return<-median(as.numeric(kydempercent[which(as.character(i)==as.character(kydempercent$County)),][3:length(colnames(kydempercent))]))
+})
+Redo2015Election$ConsolidateBase<-sapply(Redo2015Election$County,function(i){
+  if(as.character(i) %in% MedianMarginAlways$AlwaysDemCounties){
+    return<-max(MedianMarginAlways$medianDemPercent[which(as.character(i) == MedianMarginAlways$AlwaysDemCounties)],Redo2015Election$ActualPercentDem[which(as.character(i) == Redo2015Election$County)])
+  } else {
+    return<-Redo2015Election$ActualPercentDem[which(as.character(i) == Redo2015Election$County)]
+  }
+})
+ConsolidateBasePercent<-sum(Redo2015Election$ConsolidateBase*Redo2015Election$TotalVotes)/sum(Redo2015Election$TotalVotes) # Gets you to 46%
+
+#Strategy One A: Consolidate the base of counties that have ALMOST ALWAYS voted Democrat
+MedianMarginAlmostAlways<-data.frame(AlmostAlwaysDemCounties)
+MedianMarginAlmostAlways$medianDemPercent<-sapply(MedianMarginAlmostAlways$AlmostAlwaysDemCounties,function(i){
+  return<-median(as.numeric(kydempercent[which(as.character(i)==as.character(kydempercent$County)),][3:length(colnames(kydempercent))]))
+})
+Redo2015Election$ConsolidateExpandedBase<-sapply(Redo2015Election$County,function(i){
+  if(as.character(i) %in% MedianMarginAlmostAlways$AlmostAlwaysDemCounties){
+    return<-max(MedianMarginAlmostAlways$medianDemPercent[which(as.character(i) == MedianMarginAlmostAlways$AlmostAlwaysDemCounties)],Redo2015Election$ActualPercentDem[which(as.character(i) == Redo2015Election$County)])
+  } else {
+    return<-Redo2015Election$ActualPercentDem[which(as.character(i) == Redo2015Election$County)]
+  }
+})
+ConsolidateExpandedBasePercent<-sum(Redo2015Election$ConsolidateExpandedBase*Redo2015Election$TotalVotes)/sum(Redo2015Election$TotalVotes) # Gets you to 50%
+
+# Strategy Two: Exacerbate Urban Areas
+
