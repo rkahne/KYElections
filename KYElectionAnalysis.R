@@ -176,4 +176,141 @@ Redo2015Election$ConsolidateExpandedBase<-sapply(Redo2015Election$County,functio
 ConsolidateExpandedBasePercent<-sum(Redo2015Election$ConsolidateExpandedBase*Redo2015Election$TotalVotes)/sum(Redo2015Election$TotalVotes) # Gets you to 50%
 
 # Strategy Two: Exacerbate Urban Areas
+Urbane<-data.frame(c('Jefferson', 'Fayette', 'Franklin', 'Daviess', 'McCracken', 'Henderson', 'Union','Boyd'))
+colnames(Urbane)<-'County'
+Urbane$Percent2015<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes2015
+  return<-y[which(as.character(i)==as.character(kyelections$County))]/sum(y)
+})
+Urbane$Percent2011<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes2011
+  return<-y[which(as.character(i)==kyelections$County)]/sum(y)
+})
+Urbane$Percent2007<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes2007
+  return<-y[which(as.character(i)==kyelections$County)]/sum(y)
+})
+Urbane$Percent2003<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes2003
+  return<-y[which(as.character(i)==kyelections$County)]/sum(y)
+})
+Urbane$Percent1999<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes1999
+  return<-y[which(as.character(i)==kyelections$County)]/sum(y)
+})
+Urbane$Percent1995<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes1995
+  return<-y[which(as.character(i)==kyelections$County)]/sum(y)
+})
+Urbane$Percent1991<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes1991
+  return<-y[which(as.character(i)==kyelections$County)]/sum(y)
+})
+Urbane$Percent1987<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes1987
+  return<-y[which(as.character(i)==kyelections$County)]/sum(y)
+})
+Urbane$Percent1983<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes1983
+  return<-y[which(as.character(i)==kyelections$County)]/sum(y)
+})
+Urbane$Percent1979<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes1979
+  return<-y[which(as.character(i)==kyelections$County)]/sum(y)
+})
+Urbane$Percent1975<-sapply(Urbane$County,function(i){
+  y<-kyelections$TotalVotes1975
+  return<-y[which(as.character(i)==kyelections$County)]/sum(y)
+})
+Urbane$MedianPercent<-sapply(Urbane$County,function(i){
+  return<-median(as.numeric(kydempercent[which(as.character(i)==as.character(kydempercent$County)),][3:length(colnames(kydempercent))]))
+})
+Urbane$MaxPercent<-sapply(Urbane$County,function(i){
+  return<-max(as.numeric(kydempercent[which(as.character(i)==as.character(kydempercent$County)),][3:length(colnames(kydempercent))]))
+})
 
+Redo2015Election$FocusUrban<-sapply(Redo2015Election$County,function(i){
+  if(as.character(i) %in% as.character(Urbane$County)){
+    return<-Urbane$MaxPercent[which(as.character(i)==as.character(Urbane$County))]
+  } else{
+    return<-Redo2015Election$ActualPercentDem[which(as.character(i)==as.character(Redo2015Election$County))]
+  }
+})
+UrbanStrategyPercent<-sum(Redo2015Election$FocusUrban*Redo2015Election$TotalVotes)/sum(Redo2015Election$TotalVotes)
+
+Redo2015Election$FocusUrbanWithAlways<-sapply(Redo2015Election$County,function(i){
+  if(as.character(i) %in% as.character(Urbane$County)){
+    return<-Urbane$MaxPercent[which(as.character(i)==as.character(Urbane$County))]
+  } else{
+    if(as.character(i) %in% as.character(MedianMarginAlways$AlwaysDemCounties)){
+      return<-MedianMarginAlways$medianDemPercent[which(as.character(i)==as.character(MedianMarginAlways$AlwaysDemCounties))]
+    }else{
+      return<-Redo2015Election$ActualPercentDem[which(as.character(i)==as.character(Redo2015Election$County))]
+    }
+  }
+})
+UrbanStrategyWithAlwaysPercent<-sum(Redo2015Election$FocusUrbanWithAlways*Redo2015Election$TotalVotes)/sum(Redo2015Election$TotalVotes)
+
+#Ambitious Progressive Strategy
+preselex<-read.csv('./PresElex.csv')
+Obama2012<-c('Elliott','Fayette','Franklin','Jefferson')
+Obama2008<-data.frame(c('Elliott', 'Hancock', 'Henderson', 'Jefferson','Menifee','Rowan','Wolfe','Fayette','Franklin'))
+colnames(Obama2008)<-'County'
+Obama2008$County<-as.character(Obama2008$County)
+Obama2008$MaxPercent<-sapply(Obama2008$County,function(i){
+  return<-max(as.numeric(kydempercent[which(as.character(i)==as.character(kydempercent$County)),][3:length(colnames(kydempercent))]))
+})
+
+Redo2015Election$Obama2008Max<-sapply(Redo2015Election$County,function(i){
+  if(as.character(i) %in% as.character(Obama2008$County)){
+    return<-Obama2008$MaxPercent[which(as.character(i)==as.character(Obama2008$County))]
+  } else{
+    return<-Redo2015Election$ActualPercentDem[which(as.character(i)==as.character(Redo2015Election$County))]
+  }
+})
+Obama2008MaxPercent<-sum(Redo2015Election$Obama2008Max*Redo2015Election$TotalVotes)/sum(Redo2015Election$TotalVotes)
+
+Percentile75Obama2008<-sapply(which(preselex$PercentDem2008>sort(preselex$PercentDem2008)[90]),function(i){
+  return<-as.character(preselex$County[i])
+})
+Percentile75Obama2008<-data.frame(Percentile75Obama2008)
+colnames(Percentile75Obama2008)<-'County'
+Percentile75Obama2008$MaxPercent<-sapply(Percentile75Obama2008$County,function(i){
+  return<-max(as.numeric(kydempercent[which(as.character(i)==as.character(kydempercent$County)),][3:length(colnames(kydempercent))]))
+})
+Redo2015Election$Percentile75Obama2008Max<-sapply(Redo2015Election$County,function(i){
+  if(as.character(i) %in% as.character(Percentile75Obama2008$County)){
+    return<-Percentile75Obama2008$MaxPercent[which(as.character(i)==as.character(Percentile75Obama2008$County))]
+  } else{
+    return<-Redo2015Election$ActualPercentDem[which(as.character(i)==as.character(Redo2015Election$County))]
+  }
+})
+Percentile75Obama2008MaxPercent<-sum(Redo2015Election$Percentile75Obama2008Max*Redo2015Election$TotalVotes)/sum(Redo2015Election$TotalVotes)
+FocusCounties<-sapply(which(Percentile75Obama2008$County %in% Obama2008$County==FALSE),function(i){
+  return<-as.character(Percentile75Obama2008$County[i])
+})
+FocusCounties<-data.frame(FocusCounties)
+colnames(FocusCounties)<-'County'
+FocusCounties$value<-1
+FocusCounties$region<-sapply(FocusCounties$County,function(i){
+  return<-as.numeric(KYFIPS$FIP[which(KYFIPS$County==as.character(i))])
+})
+county_choropleth(FocusCounties, state_zoom = 'kentucky')
+LockupCounties<-sapply(which(Percentile75Obama2008$County %in% Obama2008$County==TRUE),function(i){
+  return<-as.character(Percentile75Obama2008$County[i])
+})
+ProgressiveMap<-data.frame(c(as.character(FocusCounties$County),LockupCounties))
+colnames(ProgressiveMap)<-'County'
+ProgressiveMap$value<-sapply(ProgressiveMap$County,function(i){
+  if(i %in% LockupCounties){
+    return<-2
+  }else if(i %in% as.character(FocusCounties$County)){
+    return<-1
+  } else{
+    return<-0
+  }
+})
+ProgressiveMap$region<-sapply(ProgressiveMap$County,function(i){
+  return<-as.numeric(KYFIPS$FIP[which(KYFIPS$County==as.character(i))])
+})
+county_choropleth(ProgressiveMap,state_zoom = 'kentucky')
