@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Medicaid and Matt Bevin</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<script src="plotly.min.js"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse" role="navigation">
+        	<div class="navbar-header">
+        	    <a class="navbar-brand" href="http://robertkahne.net">Robert Kahne</a>
+        	</div>
+    	</nav>
+    	<div class="container">
+        	<div class="jumbotron">
+        		<h2>Kentucky Election 2015: Matt Bevin and the Medicaid Expansion</h2>
+        	</div>
+        	<div class="panel panel-default">
+				<div class="panel-body" id="graphDiv" style="height:400px;"></div>
+				<div class="panel-body">
+					<p>The graphic above shows the relationship between the vote for Matt Bevin and Jenean Hampton in 2015 and the Per Capita Medicaid Expansion.  Those with a high proportion of votes for Matt Bevin and a large increase in Medicaid population are the counties in the upper right corner.  These individuals could be seen to be voting against their own interests.</p>
+				</div>
+				<div class="panel-body">
+					<p><span class="label label-default">Update</span> 11/7/2015</p>
+					<p> Somebody mentioned that there should be maps!  So, I made some maps with <a href="https://cran.r-project.org/web/packages/choroplethr/index.html">choroplethr</a></p>
+					<div class="col-md-6"><img src="BevinVote.png"></img></div>
+					<div class="col-md-6"><img src="MedicaidExpansion.png"></img></div>
+				</div>
+				<div class="panel-footer">
+					
+					<p>Data for this project was retreived from the <a href="http://elect.ky.gov/results/Pages/default.aspx">Kentucky Secretary of State's website</a> and the <a href="https://tableaui.deloitte.com/views/Dashboard02102015_v9/Cover?:embed=y">Kentucky Report on 2014 Medicaid Expansion</a>, prepared by Deloitte.</p>
+					<p>Produced with <a href="https://plot.ly/">Plotly</a> and <a href="https://www.rstudio.com">R-Studio</a>.</p>
+					<p>Visit me at these places: 
+						<a href="https://github.com/rkahne"><span class="label label-primary" style="margin-right: 5px"><i class="fa fa-github" style="margin-right: 5px"></i>GitHub</span></a>
+						<a href="https://www.linkedin.com/in/rkahne"><span class="label label-primary" style="margin-right: 5px"><i class="fa fa-linkedin" style="margin-right: 5px"></i>LinkedIn</span></a>
+						<a href="https://www.twitter.com/rkahne"><span class="label label-primary"><i class="fa fa-twitter" style="margin-right: 5px"></i></i>Twitter</span></a>
+				</div>
+			</div>
+		</div>
+		<script src="MedicaidBevinPlot.js"></script>
+	</body>
+<html>
