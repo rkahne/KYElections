@@ -54,13 +54,15 @@ summary(lm(Model$BevinPercent~Model$MedicaidExpansion))
 BevinSD<-sd(Model$BevinPercent)
 MedicaidSD<-sd(Model$MedicaidExpansion)
 NonBevinSD<-sd(Model$NonBevinPercent)
-Model$BevinSDDiff<-Model$BevinPercent/BevinSD
-Model$MedicaidSDDiff<-Model$MedicaidExpansion/MedicaidSD
-Model$NonBevinSDDiff<-Model$NonBevinPercent/NonBevinSD
-Model$HeatMap<-Model$MedicaidSDDiff/Model$NonBevinSDDiff
+Model$BevinSDDiff<-(Model$BevinPercent-mean(Model$BevinPercent))/BevinSD
+Model$MedicaidSDDiff<-(Model$MedicaidExpansion-mean(Model$MedicaidExpansion))/MedicaidSD
+Model$NonBevinSDDiff<-(Model$NonBevinPercent-mean(Model$NonBevinPercent))/NonBevinSD
+Model$HeatMap<-Model$MedicaidSDDiff-Model$NonBevinSDDiff
 HeatMap<-data.frame(Model$County,Model$HeatMap)
 colnames(HeatMap)<-c('County','value')
 HeatMap$region<-sapply(HeatMap$County,function(i){
   return<-as.numeric(KYFIPS$FIP[which(KYFIPS$County==as.character(i))])
 })
-county_choropleth(HeatMap, state_zoom = 'kentucky',title='Medicaid Expansion and Non-Bevin/Hampton Vote', num_colors = 8)
+county_choropleth(HeatMap, state_zoom = 'kentucky',title='Medicaid Expansion and Non-Bevin/Hampton Vote\nBased on Z-Score Difference', num_colors = 8)
+
+scale(NonBevinSD)
